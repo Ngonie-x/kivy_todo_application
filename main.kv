@@ -1,0 +1,211 @@
+<ListItemWithCheckbox>:
+    id: the_list_item
+    on_release: app.show_detail(the_list_item)
+
+    IconLeftWidget:
+        icon: root.icon
+
+    RightCheckbox:
+        on_release: app.mark(check, the_list_item)
+        id: check
+
+
+<Home>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDToolbar:
+            id: toolbar
+            title: "ToDo"
+            elevation: 10
+            pos_hint: {'top': 1}
+            left_action_items: [["menu", lambda x: None]]
+            right_action_items: [["plus", lambda x: app.show_task_dialog()],["dots-vertical", lambda x: None]]
+
+        MDBottomNavigation:
+            panel_color: .2, .2, .2, 1
+
+            MDBottomNavigationItem:
+                name: 'today_items'
+                text: 'Today'
+                icon: 'home'
+
+                ScrollView:
+                    MDList:
+                        id: container
+
+
+    
+
+            MDBottomNavigationItem:
+                name: 'completed_tasks'
+                text: 'Completed'
+                icon: 'checkbox-multiple-marked'
+
+                ScrollView:
+                    MDList:
+                        id: completed_container
+
+
+            MDBottomNavigationItem:
+                name: 'stats'
+                text: 'Your Stats'
+                icon: 'chart-arc'
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: "10dp"
+
+
+                    MDLabel:
+                        text: "My Stats"
+                        halign: 'center'
+                        font_style: 'H3'
+
+                    MDLabel:
+                        text: 'Tasks Completed: 4/10'
+                        halign: 'center'
+
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        padding: '10dp'
+
+                        MDLabel:
+                            text: '0%'
+                            halign: 'right'
+
+                        MDProgressBar:
+                            value: 40
+                        
+                        MDLabel:
+                            text: '100%'
+                    
+                    MDLabel:
+                        text: '40%'
+                        halign: 'center'
+                        font_style: 'H4'
+
+
+
+
+<DialogContent>:
+    orientation: "vertical"
+    spacing: "10dp"
+    size_hint: 1, None
+    height: "130dp"
+
+    GridLayout:
+        rows: 1
+        
+
+        MDTextField:
+            id: task_text
+            hint_text: "Add Task..."
+            pos_hint: {"center_y": .4}
+            color_mode: 'accent'
+            max_text_length: 50
+
+        MDIconButton:
+            icon: 'calendar'
+            on_release: root.show_date_picker()
+            padding: '10dp'
+    
+    MDLabel:
+        id: date_text
+
+    BoxLayout:
+        orientation: 'horizontal'
+
+        MDRaisedButton:
+            text: "SAVE"
+            on_release: (app.save_task(task_text.text, date_text.text), app.close_dialog())
+        MDFlatButton:
+            text: 'CANCEL'
+            on_release: app.close_dialog()
+
+
+<TaskDetailDialog>:
+    orientation: 'vertical'
+    spacing: "10dp"
+    size_hint: 1, None
+    height: "130dp"
+
+    MDLabel:
+        id: task_detail_text
+    
+    MDLabel:
+        id: task_detail_date
+
+    BoxLayout:
+        orientation: 'horizontal'
+
+        MDRaisedButton:
+            id: task_edit_button
+            text: "EDIT"
+            on_release: (root.open_edit_dialog(), app.close_detail_dialog())
+        # MDFlatButton:
+        #     text: 'CANCEL'
+        #     on_release: app.close_detail_dialog()
+        
+        MDLabel:
+
+        MDIconButton:
+            icon: 'trash-can-outline'
+            on_release: (root.delete_task_dialog(), app.close_detail_dialog())
+
+
+
+
+<TaskEditDialog>:
+    orientation: 'vertical'
+    spacing: "10dp"
+    size_hint: 1, None
+    height: "130dp"
+
+    GridLayout:
+        rows: 1
+        
+
+        MDTextField:
+            id: edit_task_text
+            hint_text: "Add Task..."
+            pos_hint: {"center_y": .4}
+            color_mode: 'accent'
+
+        MDIconButton:
+            icon: 'calendar'
+            on_release: root.show_date_picker()
+            padding: '10dp'
+    
+    MDLabel:
+        id: edit_date_text
+
+    BoxLayout:
+        orientation: 'horizontal'
+
+        MDRaisedButton:
+            text: "SAVE"
+            on_release: (root.save_task_data())
+
+        MDFlatButton:
+            text: "CANCEL"
+
+<ConfirmDelete>:
+    orientation: 'vertical'
+    spacing: "10dp"
+    size_hint: 1, None
+    height: "130dp"
+
+    MDLabel:
+        text: 'Are you sure you want to delete this task?'
+
+    BoxLayout:
+        orientation: 'horizontal'
+
+        MDRaisedButton:
+            text: 'DELETE'
+            color: (1, 0, 0, 1)
+            on_press: root.delete_the_task()
+
+        MDFlatButton:
+            text: 'CANCEL'
